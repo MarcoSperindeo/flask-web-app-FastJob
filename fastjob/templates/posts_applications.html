@@ -1,0 +1,148 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="content-section">
+
+            <form method="POST" action="">
+                    {{ form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Search Job Applications</legend>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <p class="h5">{{ form.city.label(class="form-control-label") }}</p>
+                                {% if form.city.errors %}
+                                    {{ form.city(class="form-control form-control-sm is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.city.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.city(class="form-control form-control-sm") }}
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md-4 pl-2">
+                                <p class="h5">{{ form.sector.label(class="form-control-label") }}</p>
+                                {% if form.sector.errors %}
+                                {{ form.sector(class="form-check-sm is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.sector.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                    {{ form.sector(class="form-control-sm") }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <p class="h5">{{ form.start_datejob.label(class="form-control-label") }}</p>
+                                {% if form.start_datejob.errors %}
+                                    {{ form.start_datejob(class="form-control form-control-sm is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.start_datejob.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                     <div class="input-group date" data-provide="datepicker">
+                                        {{ form.start_datejob(class="form-control form-control-sm") }}
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                     </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <p class="h5">{{ form.end_datejob.label(class="form-control-label") }}</p>
+                                {% if form.end_datejob.errors %}
+                                    {{ form.end_datejob(class="form-control form-control-sm is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.end_datejob.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                     <div class="input-group date" data-provide="datepicker">
+                                        {{ form.end_datejob(class="form-control form-control-sm") }}
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                     </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <p class="h5">{{ form.min_price.label(class="form-control-label") }}</p>
+                                {% if form.min_price.errors %}
+                                    {{ form.min_price(class="form-control form-control-sm is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.min_price.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p>{{ form.min_price(class="form-control form-control-sm") }} €/hour</p>
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <p class="h5">{{ form.max_price.label(class="form-control-label") }}</p>
+                                {% if form.max_price.errors %}
+                                    {{ form.max_price(class="form-control form-control-sm is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.max_price.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p>{{ form.max_price(class="form-control form-control-sm") }}€/hour</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <blockquote class="blockquote text-center">
+                                <p>{{ form.submit(class="btn btn-outline-info") }}</p>
+                            </blockquote>
+                        </div>
+                    </fieldset>
+            </form>
+    </div>
+
+    {% if posts.total == 0 %}
+        <blockquote class="blockquote text-center">
+            <p> No posts have been found.</p>
+        </blockquote>
+    {% elif posts.total != 0 %}
+        {% for post in posts.items %}
+            <article class="media content-section">
+                <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.post_author.image_file) }}">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="{{ url_for('users.user_posts', user_id=post.post_author.id) }}">{{ post.post_author.username }}</a>
+                        <small class="text-muted">{{ post.date_posted.strftime("%x  %H:%M") }}</small>
+                    </div>
+                    <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+                    <p class="article-content">{{ post.content }}</p>
+                    <p class="article-content"><span class="font-weight-bold">Sector:</span> {{ post.sector }}</p>
+                    <p class="article-content"><span class="font-weight-bold">Fee:</span> {{ post.price }} €/hour</p>
+            </div>
+            </article>
+        {% endfor %}
+        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                {% if posts.page == page_num %}
+                    <a class="btn btn-info mb-4" href="{{ url_for('posts.applications', page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                     <a class="btn btn-outline-info mb-4" href="{{ url_for('posts.applications', page=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock content %}

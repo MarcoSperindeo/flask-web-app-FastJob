@@ -1,0 +1,271 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+    {#<div class="page-header">
+        <p> Insert a brief user page containing User's profile pic, CV, Self-Description, email, phone number, link to paypal, etc</p>
+    </div>#}
+    <div class="content-section">
+        <div class="row">
+            <div class="col-md-5">
+                <img class="rounded-circle profile-img" src="{{ url_for('static', filename='profile_pics/' +user.image_file) }}">
+            </div>
+            <div class="col-md-6">
+                <h1>{{ user.username }}</h1>
+                <p> {{ user.name }}</p>
+                <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+                {% if user.phone_num %} <p>{{ user.phone_num }}</p> {% endif %}
+                {% if user.about_me %}
+                    <p> <span class="font-weight-bold">About Me:</span> {{ user.about_me }} </p>
+                {% endif %}
+                {% if user.cv_file %}
+                    <p><a href="{{ url_for('static', filename='profile_cvs/' +user.cv_file) }}">Curriculum Vitae</a></p>
+                {% endif %}
+                {% if user.paypal_link %}
+                    <p> <a href="{{ user.paypal_link }}"> Link to Paypal </a> </p>
+                {% endif %}
+
+                <p>Member since {{ user.registration_date.strftime('%d %B %Y') }}</p>
+                {% if user == current_user  %}
+                    <div class="col-sm-12 ml-4 pl-4">
+                        <a class="nav-item nav-link pl-5" href="{{ url_for('users.account') }}">Edit Profile</a>
+                    </div>
+                {% endif %}
+                {% if (current_user.moderator == True) and (current_user!=user) %}
+                    <div class="col-sm-12 ml-4 pl-4">
+                        <a class="nav-item nav-link text-danger" href="{{ url_for('users.delete_account',  user_id=user.id) }}">Delete Account</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if user != current_user  %}
+        <div class="content-section">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Submit a Feedback </legend>
+                    <div class="form-group">
+                        {% if form.content.errors %}
+                            {{ form.content(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.content.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.content(class="form-control form-control-lg") }}
+                        {% endif %}
+
+                    </div>
+                </fieldset>
+
+                <div class="rate">
+                    <input type="radio" id="star5" name="rate" value="star5" />
+                    <label for="star5" title="text">5 stars</label>
+                    <input type="radio" id="star4" name="rate" value="star4" />
+                    <label for="star4" title="text">4 stars</label>
+                    <input type="radio" id="star3" name="rate" value="star3" checked />
+                    <label for="star3" title="text">3 stars</label>
+                    <input type="radio" id="star2" name="rate" value="star2" />
+                    <label for="star2" title="text">2 stars</label>
+                    <input type="radio" id="star1" name="rate" value="star1" />
+                    <label for="star1" title="text">1 star</label>
+                </div>
+
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
+
+    <div class="content-section">
+
+            <h2 class="mb-3"> Feedbacks Received by {{ user.username }} ({{ feedbacks.total }})</h2>
+            {% for feedback in feedbacks.items %}
+                <article class="media content-section">
+                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + feedback.feedback_author.image_file) }}">
+                    <div class="media-body">
+                        <div class="article-metadata">
+                            <div class="row">
+                                <div class="col-sm-11">
+                                    <a class="mr-2" href="{{ url_for('users.user_posts', user_id=feedback.feedback_author.id) }}">{{ feedback.feedback_author.username }}</a>
+                                    <small class="text-muted">{{ feedback.timestamp.strftime("%x  %H:%M") }}</small>
+                                </div>
+                                <div col="sm-1">
+                                    {% if (current_user == feedback.feedback_author) or (current_user.moderator == True) %}
+                                        <div class="btn-group">
+                                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                            <div class="dropdown-menu">
+                                                {#<div class="dropdown-item">
+                                                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('users.update_feedback', user_id=user.id, feedback_id=feedback.id) }}#}{#">Update</a>
+                                                </div>#}
+                                                <div class="dropdown-item">
+                                                    <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteFeedbackModal">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div> <!-- /col-sm-1 -->
+                            </div>
+                        </div>
+                        <p class="article-content">{{ feedback.content }}</p>
+{#
+                        <p class="article-content">{{ feedback.rating }}</p>
+#}                      {%  if feedback.rating == 'star5' %}
+                            <div>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                            </div>
+                        {% elif feedback.rating == 'star4' %}
+                            <div>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star fa_custom"></span>
+                            </div>
+                        {% elif feedback.rating == 'star3' %}
+                            <div>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star fa_custom"></span>
+                                <span class="fa fa-star fa_custom"></span>
+                            </div>
+                        {% elif feedback.rating == 'star2' %}
+                            <div>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star fa_custom"></span>
+                                <span class="fa fa-star fa_custom"></span>
+                                <span class="fa fa-star fa_custom"></span>
+                            </div>
+                        {% elif feedback.rating == 'star1' %}
+                            <div>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star fa_custom"></span>
+                                <span class="fa fa-star fa_custom"></span>
+                                <span class="fa fa-star fa_custom"></span>
+                                <span class="fa fa-star fa_custom"></span>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </article>
+
+                <!--  Modal  -->
+                <div class="modal fade" id="deleteFeedbackModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">Delete Feedback?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                People will no longer be able to see your feedback!
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <form action="{{ url_for('users.delete_feedback', user_id=user.id, feedback_id=feedback.id) }}" method="POST">
+                                    <input class="btn btn-danger" type="submit" value="Delete">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% for page_num in feedbacks.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if feedbacks.page == page_num %}
+                        <a class="btn btn-info mb-4" href="{{ url_for('users.user_posts', user_id=user.id, page_fb=page_num) }}">{{ page_num }}</a>
+                    {% else %}
+                         <a class="btn btn-outline-info mb-4" href="{{ url_for('users.user_posts', user_id=user.id, page_fb=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor %}
+
+    </div>
+
+
+    <div class="content-section">
+        <h2  class="mb-3">Job posts created by {{ user.username }} ({{ posts.total }})</h2>
+        {% for post in posts.items %}
+            <article class="media content-section">
+                <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.post_author.image_file) }}">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="{{ url_for('users.user_posts', user_id=post.post_author.id) }}">{{ post.post_author.username }}</a>
+                        <small class="text-muted">{{ post.date_posted.strftime("%x  %H:%M") }}</small>
+                    </div>
+                    <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+                    <p class="article-content">{{ post.content }}</p>
+                    <p class="article-content"><span class="font-weight-bold">Job {{ post.type.capitalize() }}</span> </p>
+                    <p class="article-content"><span class="font-weight-bold">Sector:</span> {{ post.sector }}</p>
+                    <p class="article-content"><span class="font-weight-bold">Fee:</span> {{ post.price }} €/hour</p>
+                </div>
+            </article>
+        {% endfor %}
+
+        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                {% if posts.page == page_num %}
+                    <a class="btn btn-info mb-4" href="{{ url_for('users.user_posts', user_id=user.id, page_post=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                     <a class="btn btn-outline-info mb-4" href="{{ url_for('users.user_posts', user_id=user.id, page_post=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if user == current_user %}
+        <div class="content-section">
+            <h2  class="mb-3">Job posts booked by {{ user.username }} ({{ bookings.total }})</h2>
+            {% for booking in bookings.items %}
+                <article class="media content-section">
+                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + booking.booking_post.post_author.image_file) }}">
+                    <div class="media-body">
+                        <div class="article-metadata">
+                            <a class="mr-2" href="{{ url_for('users.user_posts', user_id=booking.booking_post.post_author.id) }}">{{ booking.booking_post.post_author.username }}</a>
+                            <small class="text-muted">{{ booking.booking_post.date_posted.strftime("%x  %H:%M") }}</small>
+                        </div>
+                        <h2><a class="article-title" href="{{ url_for('posts.post', post_id=booking.booking_post.id) }}">{{ booking.booking_post.title }}</a></h2>
+                        <p class="article-content">{{ booking.booking_post.content }}</p>
+                        <p class="article-content"><span class="font-weight-bold">Job {{ booking.booking_post.type.capitalize() }}</span> </p>
+                        <p class="article-content"><span class="font-weight-bold">Sector:</span> {{ booking.booking_post.sector }}</p>
+                        <p class="article-content"><span class="font-weight-bold">Fee:</span> {{ booking.booking_post.price }} €/hour</p>
+                    </div>
+                </article>
+            {% endfor %}
+
+            {% for page_num in bookings.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if bookings.page == page_num %}
+                        <a class="btn btn-info mb-4" href="{{ url_for('users.user_posts', user_id=user.id, page_booking=page_num) }}">{{ page_num }}</a>
+                    {% else %}
+                         <a class="btn btn-outline-info mb-4" href="{{ url_for('users.user_posts', user_id=user.id, page_booking=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% endblock content %}
+
+
+
+

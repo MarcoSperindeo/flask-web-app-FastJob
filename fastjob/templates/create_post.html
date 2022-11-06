@@ -1,0 +1,129 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <p class="h5">{{ form.type.label(class="form-control-label") }}</p>
+                    {% if form.type.errors %}
+                    {{ form.type(class="form-check-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.type.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                        {{ form.type(class="form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-4 ml-5 pl-3">
+                    <p class="h5">{{ form.sector.label(class="form-control-label") }}</p>
+                    {% if form.sector.errors %}
+                    {{ form.sector(class="form-check-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.sector.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                        {{ form.sector(class="form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <p class="h5">{{ form.title.label(class="form-control-label") }}</p>
+                {% if form.title.errors %}
+                    {{ form.title(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.title.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.title(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <p class="h5">{{ form.content.label(class="form-control-label") }}</p>
+                {% if form.content.errors %}
+                    {{ form.content(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.content.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.content(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <p class="h5">{{ form.city.label(class="form-control-label") }}</p>
+                    {% if form.city.errors %}
+                        {{ form.city(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.city.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.city(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group col md-6">
+                    <p class="h5">{{ form.address.label(class="form-control-label") }}</p>
+                    {% if form.address.errors %}
+                        {{ form.address(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.address.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.address(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <p class="h5">{{ form.datejob.label(class="form-control-label") }}</p>
+                    {% if form.datejob.errors %}
+                        {{ form.datejob(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.datejob.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                         <p> {{ form.datejob(class="form-control form-control-lg") }}
+                         </p>
+                    {% endif %}
+                </div>
+                <div class="col-md-5"></div>
+                <div class="form-group col-sm-3">
+                    <p class="h5">{{ form.price.label(class="form-control-label") }}</p>
+                    {% if form.price.errors %}
+                        {{ form.price(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.price.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>{{ form.price(class="form-control form-control-lg") }} €/hour</p>
+                    {% endif %}
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+
+</div>
+
+{% endblock content %}

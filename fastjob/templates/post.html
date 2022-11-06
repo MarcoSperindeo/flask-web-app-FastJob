@@ -1,0 +1,181 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' +post.post_author.image_file) }}">
+        <div class="media-body">
+            <div class="article-metadata">
+                <div class="row">
+                    <div class="col-sm-11">
+                        <a class="mr-2" href="{{ url_for('users.user_posts', user_id=post.post_author.id) }}">{{ post.post_author.username }}</a>
+                        <small class="text-muted">{{ post.date_posted.strftime("%x  %H:%M") }}</small>
+                    </div>
+                    <div col="sm-1">
+                        {% if (post.post_author == current_user) or (current_user.moderator == True) %}
+                            <div class="btn-group">
+                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                <div class="dropdown-menu">
+                                    <div class="dropdown-item">
+                                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
+                                    </div>
+                                    <div class="dropdown-item">
+                                        <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div> <!-- /col-sm-1 -->
+                </div>
+            </div>
+            <h2 class="article-title">{{ post.title }}</h2>
+            <p class="article-content">{{ post.content }}</p>
+            <p class="article-content"><span class="font-weight-bold">Job {{ post.type.capitalize() }}</span> </p>
+            <p class="article-content"><span class="font-weight-bold">Sector:</span> {{ post.sector }}</p>
+            <p class="article-content"><span class="font-weight-bold">Fee:</span> {{ post.price }} €/hour</p>
+            <p class="article-content"><span class="font-weight-bold">When:</span> {{ post.date_job.strftime("%A %d %B %Y") }} </p>
+            <p class="article-content"><span class="font-weight-bold">Where:</span> {{ post.city }} {% if post.address %} - {{ post.address }}{% endif %}</p>
+            {% if post.available == True and current_user != post.post_author %}
+            <p><a class="btn btn-secondary btn-md mt-1 mb-1" href="{{ url_for('posts.book', post_id=post.id) }}">Book</a></p>
+            {% else %}
+                {% if (booking) or (current_user.moderator == True) %}
+                    <p><a class="btn btn-danger btn-md mt-1 mb-1" href="{{ url_for('posts.unbook', post_id=post.id, booking_id=booking.id) }}">Cancel booking</a></p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </article>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Delete Post?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            People will no longer be able to see your post!
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+                <input class="btn btn-danger" type="submit" value="Delete">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">{{ legend }}</legend>
+                <div class="form-group">
+                    {% if form.content.errors %}
+                        {{ form.content(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.content.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.content(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+
+    </div>
+
+
+
+
+
+   <div class="content-section">
+    <h2 class="mb-3">Comments </h2>
+        {% for comment in comments.items %}
+
+            <article class="media content-section">
+                <img class="rounded-circle article-comment-img" src="{{ url_for('static', filename='profile_pics/' + comment.comment_author.image_file) }}">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <div class="row">
+                            <div class="col-sm-11">
+                                <a class="mr-2" href="{{ url_for('users.user_posts', user_id=comment.comment_author.id) }}">{{ comment.comment_author.username }}</a>
+                                <small class="text-muted">{{ comment.timestamp.strftime("%x  %H:%M") }}</small>
+                            </div>
+                            <div col="sm-1">
+                                {% if (comment.comment_author == current_user) or (current_user.moderator == True) %}
+                                    <div class="btn-group">
+                                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                        <div class="dropdown-menu">
+                                            <div class="dropdown-item">
+                                                <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.update_comment', post_id=post.id, comment_id=comment.id) }}">Update</a>
+                                            </div>
+                                            <div class="dropdown-item">
+                                                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteCommentModal">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div> <!-- /col-sm-1 -->
+                        </div>
+                    </div>
+                    <p class="article-content">{{ comment.content }}</p>
+                </div>
+            </article>
+
+
+
+         <!--  Modal  -->
+            <div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteCommentModalLabel">Delete Comment?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            People will no longer be able to see your comment!
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <form action="{{ url_for('posts.delete_comment', post_id=post.id, comment_id=comment.id) }}" method="POST">
+                                <input class="btn btn-danger" type="submit" value="Delete">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor%}
+
+
+        <div>
+        {% for page_num in comments.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if comments.page == page_num %}
+                        <a class="btn btn-info mb-4" href="{{ url_for('posts.post', post_id=post.id, page=page_num) }}">{{ page_num }}</a>
+                    {% else %}
+                        <a class="btn btn-outline-info mb-4" href="{{ url_for('posts.post', post_id=post.id, page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor %}
+        </div>
+
+    </div>
+
+{% endblock content %}
