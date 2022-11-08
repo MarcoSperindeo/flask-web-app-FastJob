@@ -9,8 +9,8 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = os.environ['EMAIL_USERNAME']
-    MAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+    MAIL_USERNAME = os.environ['EMAIL_USERNAME'] # set env variable -> insert gmail address
+    MAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD') # set env variable -> insert app pswd
 
     print('%s' % MAIL_USERNAME)
     print('%s' % MAIL_PASSWORD)
