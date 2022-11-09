@@ -1,8 +1,8 @@
 # flask-website-FastJob
 ## What?
-The FastJob Website was built using Python in PyCharm integrated development environment (IDE). 
-Among the tools utilized there is Flask - a web application micro-framework written in Python and based on the Web Server Gateway Interface (WSGI) ‘Werkzeug’ and on the web template engine ‘Jinja2’ - whose main role is managing the routing of the web application. 
-The Flask framework is also used for managing the relational database, thanks to the SQLAlchemy toolkit extension.
+The FastJob web application has been built using Python in PyCharm integrated development environment (IDE). 
+Among the tools utilized there is Flask - a web development framework written in Python and based on the Web Server Gateway Interface (WSGI) ‘Werkzeug’ and on the web template engine ‘Jinja2’ - whose main role is managing the routing of the web application. 
+The Flask framework is also used for managing the relational database with the SQLAlchemy toolkit extension.
 For what it concerns the front-end of the website (UI and styling), I have used CSS with Bootstrap.
 
 ## Why?

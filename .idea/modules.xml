@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/fastJob.iml" filepath="$PROJECT_DIR$/.idea/fastJob.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/fastjob.iml" filepath="$PROJECT_DIR$/.idea/fastjob.iml" />
     </modules>
   </component>
 </project>
