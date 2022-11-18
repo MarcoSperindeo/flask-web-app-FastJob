@@ -15,4 +15,4 @@ The stack utilized to build the FastJob web application is the following:
 - Server-side scripting was developed using Python’s framework for web development Flask. Flask is based on two main components: 1\ the WSGI (Web Server Gateway Interface) Werkzeug and 2\ the template rendering engine Jinja2.
 - Client-side scripting was developed in JavaScript.
 - The RDBMS utilized was SQLite. SQLAlchemy library (SQL toolkit and Object Relational Mapper for Python) was used to interact with the database.
-- Front-end of the website (UI and styling of web pages) was developed using CSS and Bootstrap.
+- Front-end of the website (UI and styling of web pages) was developed using HTML, CSS and Bootstrap.
