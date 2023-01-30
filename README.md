@@ -1,7 +1,7 @@
 # flask-web-app-FastJob
 
 ## Why?
-The aim of the FastJob platform is to connect users with one another in order to make it easier to match demand for jobs with offer.
+The aim of the FastJob platform is to connect users with each other in order to make it easier to match demand for jobs with offer.
 
 ## What?
 Using the FastJob web app, users are able to either post job offers - specifying the salary they are willing to pay - or job applications - hence volunteering to perform a particular job for a given wage.  
